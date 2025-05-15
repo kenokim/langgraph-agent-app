@@ -1,0 +1,6 @@
+{
+  "graphs": {
+    "app_graph": "app.graph.instance:app_graph"
+  },
+  "dependencies": ["requirements.txt"]
+} 
