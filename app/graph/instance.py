@@ -1,5 +1,6 @@
 import operator
 from typing import TypedDict, Annotated, Sequence, List, Dict, Any
+import os
 
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, ToolMessage
 from langchain_core.pydantic_v1 import BaseModel, Field
@@ -25,7 +26,7 @@ class AgentState(TypedDict):
 
 # 2. LLM 및 도구 초기화
 # Initialize the Gemini model
-gemini_model = ChatGoogleGenerativeAI(
+llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash-preview-04-17",
     google_api_key=os.getenv("GEMINI_API_KEY"),
     temperature=0
@@ -71,10 +72,6 @@ memory_saver = MemorySaver() # 대화 기록 저장을 위한 인메모리 체�
 # 이는 도구 실행 결과를 LLM이 다시 처리하도록 하기 위함입니다.
 workflow.add_edge("tools", "agent")
 
-# 6. MemorySaver를 사용하여 그래프 컴파일 (Compile the graph with MemorySaver)
-# MemorySaver는 대화 기록과 상태를 인메모리에 저장하는 체크포인터입니다.
-memory_saver = MemorySaver()
-
 # 정의된 워크플로우를 컴파일하여 실행 가능한 'app_graph' 객체를 생성합니다.
-# checkpointer를 지정하여 대화 상태를 저장하고 복원할 수 있게 합니다.
-app_graph = workflow.compile(checkpointer=memory_saver) 
+# LangGraph API/플랫폼이 자체적으로 체크포인터를 관리합니다.
+app_graph = workflow.compile() 
