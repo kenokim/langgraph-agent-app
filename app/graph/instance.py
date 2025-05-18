@@ -8,7 +8,7 @@ from langgraph.checkpoint.memory import MemorySaver
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from .grafana_mcp_agent import make_grafana_agent
+from .grafana_mcp_agent import make_grafana_agent, make_grafana_renderer_agent
 
 from dotenv import load_dotenv
 
@@ -31,7 +31,14 @@ llm = ChatGoogleGenerativeAI(
 # 3. 그래프 노드: 에이전트 로직 (기존 call_model 대체)
 async def agent_node(state: AgentState):
     async with make_grafana_agent(llm) as agent:
-        return await agent.ainvoke(state["messages"])
+        # ReAct 에이전트에 전달할 입력은 상태의 'messages'를 포함하는 딕셔너리여야 합니다.
+        agent_input = {"messages": state["messages"]}
+        
+        # 에이전트를 호출합니다. 반환값은 상태 업데이트를 위한 딕셔너리일 것입니다.
+        update_dict = await agent.ainvoke(agent_input)
+        
+        # 에이전트가 반환한 딕셔너리를 그대로 반환하여 그래프 상태를 업데이트합니다.
+        return update_dict
 
 # 4. 조건부 엣지: 다음 단계 결정
 def should_continue(state: AgentState) -> str:
