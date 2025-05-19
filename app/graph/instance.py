@@ -3,7 +3,8 @@ from langgraph_supervisor import create_supervisor
 from langgraph.checkpoint.memory import MemorySaver
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from .grafana_mcp_agent import make_grafana_agent, make_grafana_renderer_agent
+from .grafana_mcp_agent import make_grafana_agent
+from .grafana_renderer_mcp_agent import make_grafana_renderer_agent
 from .server_info_agent import make_server_info_agent
 from dotenv import load_dotenv
 
