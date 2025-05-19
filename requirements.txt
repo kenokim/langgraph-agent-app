@@ -2,6 +2,7 @@ fastapi
 uvicorn[standard]
 pydantic
 langgraph
+langgraph-supervisor
 langchain-google-vertexai
 langchain
 langchain_core

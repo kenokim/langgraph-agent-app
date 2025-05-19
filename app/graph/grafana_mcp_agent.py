@@ -1,5 +1,4 @@
 import os
-from contextlib import asynccontextmanager
 
 from langgraph.prebuilt import create_react_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
@@ -24,15 +23,16 @@ def get_grafana_mcp_client():
             }
         )
 
-@asynccontextmanager
-async def make_grafana_agent(llm):
-    async with get_grafana_mcp_client() as client:
-        yield create_react_agent(
-            llm,
-            client.get_tools(),
+def make_grafana_agent(llm):
+    return create_react_agent(
+        name="grafana_agent",
+        model=llm,
+        tools=get_grafana_mcp_client().get_tools(),
+        prompt=(
             ""
-            )
-    
+        )
+    )
+
 def get_grafana_renderer_mcp_client():
     """
     Get a MultiServerMCPClient instance for Grafana MCP servers.
@@ -46,11 +46,12 @@ def get_grafana_renderer_mcp_client():
             }
         )
 
-@asynccontextmanager
-async def make_grafana_renderer_agent(llm):
-    async with get_grafana_renderer_mcp_client() as client:
-        yield create_react_agent(
-            llm,
-            client.get_tools(),
+def make_grafana_renderer_agent(llm):
+    return create_react_agent(
+        name="grafana_renderer_agent",
+        model=llm,
+        tools=get_grafana_renderer_mcp_client().get_tools(),
+        prompt=(
             ""
-            )
+        )
+    )
